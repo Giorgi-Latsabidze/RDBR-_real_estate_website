@@ -1,25 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import { fetchAgents } from './services/apiServices';
 
-function App() {
+const AgentsList = () => {
+  const [agents, setAgents] = useState([]);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetchAgents()
+      .then(data => setAgents(data))
+      .catch(error => setError(error));
+  }, []);
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          welcome
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <h1>Agents List</h1>
+      <ul>
+        {agents.map(agent => (
+          <li key={agent.id}>{agent.name} - {agent.email}</li>
+        ))}
+      </ul>
     </div>
   );
-}
+};
 
-export default App;
+export default AgentsList;
